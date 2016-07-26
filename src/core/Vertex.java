@@ -1,8 +1,8 @@
 package core;
 
 public class Vertex {
-	String id;
-	String halfEdge;
-	double x;
-	double y;
+	public String id;
+	public String halfEdge;
+	public int x;
+	public int y;
 }

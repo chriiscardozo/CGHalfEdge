@@ -1,6 +1,6 @@
 package core;
 
 public class Face {
-	String id;
-	String halfEdge;
+	public String id;
+	public String halfEdge;
 }

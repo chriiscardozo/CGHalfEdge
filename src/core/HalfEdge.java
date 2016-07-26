@@ -1,9 +1,9 @@
 package core;
 
 public class HalfEdge {
-	String id;
-	String originVertex;
-	String nextHalfEdge;
-	String oppositeHalfEdge;
-	String face;
+	public String id;
+	public String originVertex;
+	public String nextHalfEdge;
+	public String oppositeHalfEdge;
+	public String face;
 }
