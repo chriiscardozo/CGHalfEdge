@@ -5,13 +5,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -25,12 +22,12 @@ import core.Vertex;
 @SuppressWarnings("serial")
 public class HalfEdgeWindow extends JPanel {
 
-	private static final int MAX_COORDINATE = 20;
-	private static final int PREF_W = 900;
+	private static final int MAX_COORDINATE = 15;
+	private static final int PREF_W = 800;
 	private static final int PREF_H = 600;
 	private static final int BORDER_GAP = 30;
 	private static final Color GRAPH_COLOR = Color.green;
-	private static final Color GRAPH_POINT_COLOR = new Color(150, 50, 50, 180);
+	private static final Color GRAPH_POINT_COLOR = Color.black;
 	private static final Stroke GRAPH_STROKE = new BasicStroke(3f);
 	private static final int GRAPH_POINT_WIDTH = 12;
 	private static final int Y_HATCH_CNT = MAX_COORDINATE;
@@ -80,32 +77,34 @@ public class HalfEdgeWindow extends JPanel {
 			String initialHalfEdge = f.halfEdge;
 			HalfEdge h = halfEdges.get(initialHalfEdge);
 			
-			int x1 = (int) (vertices.get(h.originVertex).x * xScale + BORDER_GAP);
-	        int y1 = (int) ((MAX_COORDINATE - 1 - vertices.get(h.originVertex).y) * yScale + BORDER_GAP);
-			
-			g2.fillOval(x1 - GRAPH_POINT_WIDTH / 2, y1 - GRAPH_POINT_WIDTH / 2, GRAPH_POINT_WIDTH, GRAPH_POINT_WIDTH);
+			do{
+				// Print actual origin vertex
+				int x1 = (int) (vertices.get(h.originVertex).x * xScale + BORDER_GAP);
+				int y1 = (int) ((MAX_COORDINATE - 1 - vertices.get(h.originVertex).y) * yScale + BORDER_GAP);
+				printVertexOnScreen(x1, y1, g2);
+				
+				HalfEdge prox = halfEdges.get(h.nextHalfEdge);
+				int x2 = (int) (vertices.get(prox.originVertex).x * xScale + BORDER_GAP);
+				int y2 = (int) ((MAX_COORDINATE - 1 - vertices.get(prox.originVertex).y) * yScale + BORDER_GAP);
+				
+				Stroke oldStroke = g2.getStroke();
+				printEdgeOnScreen(x1, y1, x2, y2, g2);
+				g2.setStroke(oldStroke);
+				
+				h = prox;
+			} while(!initialHalfEdge.equals(h.id));
 		}
-		
-//		Stroke oldStroke = g2.getStroke();
-//		g2.setColor(GRAPH_COLOR);
-//		g2.setStroke(GRAPH_STROKE);
-//		for (int i = 0; i < verticesPoints.size() - 1; i++) {
-//			int x1 = verticesPoints.get(i).x;
-//			int y1 = verticesPoints.get(i).y;
-//			int x2 = verticesPoints.get(i + 1).x;
-//			int y2 = verticesPoints.get(i + 1).y;
-//			g2.drawLine(x1, y1, x2, y2);         
-//		}
-//
-//		g2.setStroke(oldStroke);      
-//		g2.setColor(GRAPH_POINT_COLOR);
-//		for (int i = 0; i < verticesPoints.size(); i++) {
-//			int x = verticesPoints.get(i).x - GRAPH_POINT_WIDTH / 2;
-//			int y = verticesPoints.get(i).y - GRAPH_POINT_WIDTH / 2;;
-//			int ovalW = GRAPH_POINT_WIDTH;
-//			int ovalH = GRAPH_POINT_WIDTH;
-//			g2.fillOval(x, y, ovalW, ovalH);
-//		}
+	}
+
+	private void printVertexOnScreen(int x1, int y1, Graphics2D g2) {
+		g2.setColor(GRAPH_POINT_COLOR);
+		g2.fillOval(x1 - GRAPH_POINT_WIDTH / 2, y1 - GRAPH_POINT_WIDTH / 2, GRAPH_POINT_WIDTH, GRAPH_POINT_WIDTH);
+	}
+	
+	private void printEdgeOnScreen(int x1, int y1, int x2, int y2, Graphics2D g2){
+		g2.setColor(GRAPH_COLOR);
+		g2.setStroke(GRAPH_STROKE);
+		g2.drawLine(x1, y1, x2, y2);
 	}
 
 	@Override
